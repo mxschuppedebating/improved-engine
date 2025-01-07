@@ -1,0 +1,61 @@
+{% set name = "pyct" %}
+{% set version = "0.5.0" %}
+{% set sha256 = "dd9f4ac5cbd8e37c352c04036062d3c5f67efec76d404761ef16b0cbf26aa6a0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  entry_points:
+    - pyct=pyct.__main__:main
+
+requirements:
+  host:
+    - param 1.8.2
+    - python
+    - pip
+    - setuptools >=61.0
+    - wheel
+  run:
+    - param >=1.7.0
+    - python
+    # extras_require for 'cmd':
+    - pyyaml
+    - requests
+
+test:
+  imports:
+    - pyct
+    - pyct.build
+    - pyct.cmd
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/pyviz/pyct
+  description: |
+    A utility package that includes:
+    pyct.cmd: Makes various commands available to other packages. (Currently no sophisticated plugin system, just a try import/except in the other packages.) 
+    The same commands are available from within python. Can either add new subcommands to an existing argparse based command if the module has an existing command, 
+    or create the entire command if the module has no existing command. Currently, there are commands for copying examples and fetching data. See
+    pyct.build: Provides various commands to help package building, primarily as a convenience for project maintainers.
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: python package common tasks for users (e.g. copy examples, fetch data, ...)
+  dev_url: https://github.com/pyviz/pyct
+  doc_url: https://github.com/pyviz-dev/pyct/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - ceball
